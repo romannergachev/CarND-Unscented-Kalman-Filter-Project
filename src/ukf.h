@@ -9,7 +9,6 @@ using Eigen::VectorXd;
 
 class UKF {
 public:
-
   ///* initially set to false, set to true in first call of ProcessMeasurement
   bool is_initialized_;
 
@@ -25,8 +24,26 @@ public:
   ///* state covariance matrix
   MatrixXd P_;
 
+  ///* augmented state vector: [pos1 pos2 vel_abs yaw_angle yaw_rate] in SI units and rad
+  VectorXd x_aug_;
+
+  VectorXd z_pred_;
+
+  ///* augmented state covariance matrix
+  MatrixXd P_aug_;
+
   ///* predicted sigma points matrix
   MatrixXd Xsig_pred_;
+
+  MatrixXd Xsig_aug_;
+
+  MatrixXd Zsig_;
+
+  MatrixXd S_;
+
+  MatrixXd R_;
+
+  MatrixXd Tc_;
 
   ///* time when the state is true, in us
   long time_us_;
@@ -56,7 +73,9 @@ public:
   VectorXd weights_;
 
   ///* State dimension
-  int n_x_;
+  const int n_x_ = 5;
+
+  const int n_z_ = 3;
 
   ///* Augmented state dimension
   int n_aug_;
@@ -104,6 +123,15 @@ public:
    * @param meas_package The measurement at k+1
    */
   void UpdateRadar(MeasurementPackage meas_package);
+
+  void AugmentedSigmaPoints();
+  void PredictMeanAndCovariance();
+  void PredictRadarMeasurement();
+  void UpdateState(MeasurementPackage meas_package);
+  void SigmaPointPrediction(double delta_t);
+
+private:
+  long previous_timestamp_;
 };
 
 #endif /* UKF_H */
