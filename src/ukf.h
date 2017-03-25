@@ -1,8 +1,10 @@
 #ifndef UKF_H
 #define UKF_H
+
 #include "Eigen/Dense"
 #include "measurement_package.h"
 #include <vector>
+#include "tools.h"
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -17,6 +19,8 @@ public:
 
   ///* if this is false, radar measurements will be ignored (except for init)
   bool use_radar_;
+
+  Tools tools;
 
   ///* state vector: [pos1 pos2 vel_abs yaw_angle yaw_rate] in SI units and rad
   VectorXd x_;
@@ -69,7 +73,7 @@ public:
   double std_radphi_;
 
   ///* Radar measurement noise standard deviation radius change in m/s
-  double std_radrd_ ;
+  double std_radrd_;
 
   ///* Weights of sigma points
   VectorXd weights_;
@@ -118,23 +122,25 @@ public:
    */
   void Prediction(double delta_t);
 
-  /**
-   * Updates the state and the state covariance matrix using a laser measurement
-   * @param meas_package The measurement at k+1
-   */
-  void UpdateLidar(MeasurementPackage meas_package);
-
-  /**
-   * Updates the state and the state covariance matrix using a radar measurement
-   * @param meas_package The measurement at k+1
-   */
-  void UpdateRadar(MeasurementPackage meas_package);
-
   void AugmentedSigmaPoints();
+
   void PredictMeanAndCovariance();
+
+  /**
+   * Predict measurement using a radar data
+   */
   void PredictRadarMeasurement();
+
+  /**
+   * Predict measurement using a laser data
+   */
   void PredictLidarMeasurement();
+
+  /**
+    * Updates the state and the state covariance matrix
+    */
   void UpdateState(MeasurementPackage meas_package);
+
   void SigmaPointPrediction(double delta_t);
 
 private:
