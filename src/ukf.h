@@ -41,7 +41,9 @@ public:
 
   MatrixXd S_;
 
-  MatrixXd R_;
+  MatrixXd R_radar_;
+
+  MatrixXd R_lidar_;
 
   MatrixXd Tc_;
 
@@ -75,7 +77,11 @@ public:
   ///* State dimension
   const int n_x_ = 5;
 
-  const int n_z_ = 3;
+  const int n_z_radar_ = 3;
+
+  const int n_z_lidar_ = 2;
+
+  int n_z_;
 
   ///* Augmented state dimension
   int n_aug_;
@@ -127,6 +133,7 @@ public:
   void AugmentedSigmaPoints();
   void PredictMeanAndCovariance();
   void PredictRadarMeasurement();
+  void PredictLidarMeasurement();
   void UpdateState(MeasurementPackage meas_package);
   void SigmaPointPrediction(double delta_t);
 
